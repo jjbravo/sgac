@@ -1,0 +1,202 @@
+	
+{%  extends 'citas/base.html' %}
+{% load url from future %}
+{% load bootstrap_tags %}
+{% block title %}
+Nueva cita  {{ paciente}}
+{% endblock %}
+{% block js %}
+    <script type="text/javascript">
+    $(function(){
+        if($('#datepicker').val()!="" && $('#id_medico').val()!="" || $('#id_especialidad').val()!="" ){
+
+        getHoras();
+        getMedico();
+        }
+    //***************************************************
+    $('#id_servicio').on('change',getMedico);
+    function getMedico(){
+    	var id=$('#id_servicio').val();
+    	$.ajax({
+    		data:{'id':id},
+    		url:'/getMedicoAjax/',
+    		type:'GET',
+    		success : function(data){
+    			//console.log(data);
+	    			var html="";
+    			if(data=='null'){
+    				//alert('No hay medicos para esta especialidad');
+    				html='<option value="0">-------------------</option>'
+    				$("#id_medico").html(html);
+    			}else{
+
+	    			for(var i=0;i<data.length;i++){
+	    				html+="<option value='"+data[i].pk+"'>"+data[i].fields.nombres+" "+data[i].fields.apellidos+"</option>";
+	    			}
+    				$("#id_medico").html(html);
+    			}
+    		},
+
+    	});
+
+
+        $('#datepicker').val('');
+    }
+
+    //***************************************************
+    $('#datepicker').on('change',getHoras);
+    function getHoras(){
+    	var fecha=$('#datepicker').val();
+        var id_medico=$('#id_medico').val();
+    	$.ajax({
+    		data:{'fecha':fecha,'id_medico':id_medico},
+    		url:'/getHoras/',
+    		type:'GET',
+    		success : function(data){
+    		  if(data){
+                
+                    var html="<option value='0'>-----------</option>";
+
+                    for(var i=0;i<data.length;i++){
+                        html+="<option value='"+data[i].pk+"'>"+data[i].fields.hora+"</option>";
+                    }
+                    $("#id_hora").html(html);
+              }
+    			//}
+    		},
+
+    	});
+    }
+
+    //***************************************************
+     $('#id_medico').on('change',getHoras);
+    function getHoras(){
+        var fecha=$('#datepicker').val();
+        var id_medico=$('#id_medico').val();
+        //alert(fecha);
+        //alert(id_medico);
+        $.ajax({
+            data:{'fecha':fecha,'id_medico':id_medico},
+            url:'/getHoras/',
+            type:'GET',
+            success : function(data){
+                //console.log(data);
+                /*  var html="";
+                if(data=='null'){
+                    //alert('No hay medicos para esta especialidad');
+                    html='<option value="0">-------------------</option>'
+                    $("#id_hora").html(html);
+                }else{
+                    */
+                    var html="<option value='0'>-----------</option>";
+
+                    for(var i=0;i<data.length;i++){
+                        html+="<option value='"+data[i].pk+"'>"+data[i].fields.hora+"</option>";
+                    }
+                    $("#id_hora").html(html);
+                //}
+            },
+
+        });
+    }
+      //***************************************************
+ 
+    //***************************************************
+    	//alert(id);
+// DATEPIKER SELECT FECHA
+                    $('#datepicker').datepicker(
+    									{
+    										dateFormat: 'yy-mm-dd',
+    										minDate:'-0d'
+    									});
+
+
+
+    }); // FIN FUNCION LOAD PRINCIPAL
+    </script>
+    {% endblock %}
+
+{% block navbar %}
+				
+			<ul class="nav navbar-nav">
+				<li >
+					<a href="{% url 'citas:index' %}"><span class="glyphicon glyphicon-home" ></span> Home</a>
+				</li>
+				
+                
+                <li class="active">
+                    <a href="/getcita"><span class="glyphicon glyphicon-list-alt" ></span> Citas</a>
+                </li>
+                <li>
+                    <a href="/getpacientes"><span class="glyphicon glyphicon-user"></span> Pacientes</a>
+                </li>   
+                
+				
+
+				
+			</ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="navbar-rigth">
+                <a> <span class="glyphicon glyphicon-user" ></span> Recepción </a>
+                </li>
+
+            <li>
+                    <a href="{% url 'citas:logout' %}"><span class="glyphicon glyphicon-off"></span> Salir</a>
+                </li>
+            </ul>
+          
+		
+		
+ {% endblock %}
+{% block navsAsideIzq %} 
+	<ul class="nav nav-pills nav-stacked">
+				  <li ><a href="#"><span class="glyphicon glyphicon-home" ></span> Home</a></li>
+				  <li class="active">
+					<a href="/buscar"><span class="glyphicon glyphicon-plus" ></span> Nuevo</a>
+				</li>
+				 <li >
+                    <a href="/getcita"><span class="glyphicon glyphicon-list-alt" ></span> Citas</a>
+                </li>
+				</ul>
+                <br>
+{% endblock %}
+{% block contenido  %} 
+
+
+<div class="panel panel-primary">
+	<div class="panel-heading">Registro de Cita para  <b>  {{ paciente}} </b></div>
+  <div class="panel-body">
+
+<div class="col-md-2"></div>
+<div class="col-md-6">
+
+    
+	<form role="form" class="form-horizontal"  id="formulario" method="POST"  >
+
+		 {% csrf_token %}
+		 
+		 	
+		<div class="form-actions">
+
+
+
+		{{ form|as_bootstrap }}
+
+        <input type="hidden" value="{{paciente.id_paciente}}" name="paciente">
+        
+
+		 <input class="btn btn-success" type="submit" value="Guardar"> 
+  </div>
+ 
+	</form>
+
+
+
+
+  </div>
+ 
+</div>
+
+</div>
+
+{% endblock %}

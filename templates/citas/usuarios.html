@@ -1,0 +1,139 @@
+{% extends 'citas/base.html' %}
+
+{% load url from future %}
+{% block title %} Usuarios {% endblock %}
+{% block js %}
+<script>
+	$(function(){
+		$(".alert").fadeIn(400).delay(2000).slideUp(700);
+});
+</script>
+{% endblock %}
+{% block navbar %}
+				
+	
+			<ul class="nav navbar-nav">
+				
+				<li >
+					<a href="/administracion"><span class="glyphicon glyphicon-home" ></span> Home</a>
+				</li>
+				
+				<li >
+					
+					<a href="/administracion/usuarios"><span class="glyphicon glyphicon-user" ></span> Usuarios</a>
+				
+				</li>
+				<li >
+					<a href="/administracion/medicos"><span class="glyphicon glyphicon-user" ></span> Médicos</a>
+				</li>
+				
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li class="navbar-rigth">
+				<a>	<span class="glyphicon glyphicon-user" ></span>  Administracion   {{medico.nombres}} {{medico.apellidos}}</a>
+				</li>
+
+				<li>
+					<a href="{% url 'citas:logout' %}"><span class="glyphicon glyphicon-off"></span> Salir</a>
+				</li>
+			</ul>
+				
+		
+ {% endblock %}
+
+{% block navsAsideIzq %} 
+	<ul class="nav nav-pills nav-stacked">
+				  <li class="active"><a href="/administracion"><span class="glyphicon glyphicon-home" ></span> Home</a></li>
+				 
+				<li >
+					<a href="recepcionista"><span class="glyphicon glyphicon" ></span> Recepcionistas</a>
+				</li>
+					
+				
+				<li>
+					<a href="{% url 'citas:logout' %}"><span class="glyphicon glyphicon-off"></span> Salir</a>
+				</li>
+				</ul>
+				<br>
+{% endblock %}
+{% block contenido  %} 
+
+
+<div class="panel panel-primary">
+	<div class="panel-heading">Usuarios</div>
+  <div class="panel-body">
+{% if registrado %}
+	<div class="alert alert-info">
+			<p>{{ registrado }} </p>	
+	</div>
+	{% endif %}
+<table class="table table-hover table-bordered">
+		<thead>
+			<tr>
+				
+				<th>Usuario</th> 
+				<th>Contraseña</th> 
+				<th>Documento</th> 
+				<th>Nombres</th> 
+				<th>Direccion</th>
+				<th>Ciudad</th>
+				<th>Celular</th>
+				<th>Teléfono</th>
+				<th>correo</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% if usuarios  %} 
+					
+				{% for dato in usuarios %}
+					<tr>
+						
+						<td>{{dato.usuario}}</td>
+						<td>**********</td>
+						<td>{{dato.documento}}</td>
+						<td>{{dato.nombres}} {{dato.apellidos}}</td>
+						<td>{{dato.direccion}}</td>
+						<td>{{dato.ciudad}}</td>
+						<td>{{dato.celular}}</td>
+						<td>{{dato.telefono}}</td>
+						<td>{{dato.correo}}</td>
+					</tr>
+				{% empty %}
+				<li>No hay Usuarioss Registrados</li>
+				{% endfor %}
+			{% endif %}
+		</tbody>
+	</table>	
+
+</div>
+	  <div class="panel-footer">
+  	
+  	<div class="col-md-2"></div>
+  	{% if usuarios.paginator %}
+  <ul class="pagination">
+    {% if usuarios.has_previous %}
+      <li><a href="?page={{ usuarios.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><a href="#">&laquo;</a></li>
+    {% endif %}
+
+    {% for num in usuarios.paginator.page_range %}
+      {% ifequal num usuarios.number %}
+        <li class="active"><a href="#">{{ num }}<span class="sr-only">(current)</span></a></li>
+      {% else %}
+        <li><a href="?page={{ num }}">{{ num }}</a></li>
+
+      {% endifequal %}
+    {% endfor %}
+
+    {% if usuarios.has_next %}
+      <li><a href="?page={{ usuarios.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><a href="#">&raquo;</a></li>
+    {% endif %}
+  <ul>
+	{% endif %}
+  </div>
+</div>
+
+{% endblock %}

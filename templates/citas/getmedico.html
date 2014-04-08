@@ -1,0 +1,164 @@
+{% extends 'citas/base.html' %}
+{% load url from future %}
+{% block title %} Médicos {% endblock %}
+{% block js%}
+<script>
+	$(function(){
+$(".alert").fadeIn(400).delay(1500).slideUp(700);
+					{% if noexiste %}
+	 				setTimeout(function(){  
+								     urlReload = "{% url 'citas:getMedico' %}";  
+								     $(location).attr('href',urlReload);  
+								     },1800);
+	 				{% endif %}
+	});
+</script>
+{% endblock %}
+{% block navbar %}
+				
+			<ul class="nav navbar-nav">
+				<li >
+					<a href="/administracion"><span class="glyphicon glyphicon-home" ></span> Home</a>
+				</li>
+				
+				 <li class="dropdown">
+			        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user" ></span> Usuarios <b class="caret"></b></a>
+			        <ul class="dropdown-menu">
+			           <li><a href="usuarios">Lista de usuarios</a></li>
+			           <li><a href="recepcionista">Nuevo usuario</a></li>
+			        </ul>
+			      </li>
+			      <!-- Medicos -->
+			      <li class="dropdown">
+			        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user" ></span> Médicos <b class="caret"></b></a>
+			        <ul class="dropdown-menu">
+			           <li><a href="{% url 'citas:getMedico' %}">Lista de Médicos</a></li>
+			           <li><a href="/administracion/medicos/addmedico/">Nuevo Médico</a></li>
+			           <li>
+			          <a href="/medicos">Agenda de Médicos</a>
+			        </li>
+			        </ul>
+			      </li>
+			      <!-- Configuracion -->
+			        <li class="dropdown">
+			        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class=" glyphicon glyphicon-wrench" ></span> Configuración <b class="caret"></b></a>
+			        <ul class="dropdown-menu">
+			           <li><a href="{% url 'citas:configEspecialidades' %}">Especialidades</a></li>
+			           <li><a href="{% url 'citas:configServicios' %}">Servicios</a></li>
+			           <li><a href="{% url 'citas:configHorario' %}">Horario</a></li>
+			           
+			        </ul>
+			      </li>	
+
+				
+			</ul>
+	<ul class="nav navbar-nav navbar-right">
+				<li class="navbar-rigth">
+				<a>	<span class="glyphicon glyphicon-user" ></span>  Administracion   {{medico.nombres}} {{medico.apellidos}}</a>
+				</li>
+
+				<li>
+					<a href="{% url 'citas:logout' %}"><span class="glyphicon glyphicon-off"></span> Salir</a>
+				</li>
+			</ul>
+		
+ {% endblock %}
+ {% block logout %} <a href="{% url 'citas:logout' %}">Salir</a>
+					{% endblock %}
+
+{% block navsAsideIzq %} 
+	<ul class="nav nav-pills nav-stacked">
+				  <li class="active"><a href="#"><span class="glyphicon glyphicon-home" ></span> Home</a></li>
+				  <li>
+					<a href="/administracion/medicos/addmedico/">Nuevo Médico</a>
+				</li>
+				  
+				</ul>
+				<br>
+{% endblock %}					
+{% block  contenido %} 
+<div class="panel panel-primary">
+	<div class="panel-heading">Médicos | Datos personales 
+  </div>
+  <div class="panel-body">
+  	{% if noexiste %}
+	<div class="alert alert-info">
+			<p>{{ noexiste }}</p>	
+	</div>
+	{% endif %}
+   <form class="navbar-form navbar-left" method="post" action="{% url 'citas:buscarMedico' %}" role="search">
+        <div class="form-group">
+          <input type="text" name="dato" class="form-control" placeholder="Search">
+          {% csrf_token %}
+				
+        </div>
+        <button type="submit" class="btn btn-default">Buscar</button>
+      </form>
+
+<table class="table table-hover table-bordered">
+		<thead>
+			<tr>
+				
+				<th>Documento</th> 
+				<th>Nombres</th> 
+				<th>Celular</th>
+				<th>Correo</th>
+				<th>Citas</th>
+				<th><small class="glyphicon glyphicon-eye-open"> </small> Ver</th>
+				
+				
+			</tr>
+		</thead>
+		<tbody>
+			{% if medico  %} 
+					
+				{% for dato in medico %}
+					<tr>
+						
+						<td>{{dato.documento}}</td>
+						<td>{{dato.nombres}} {{dato.apellidos}}</td>					
+						<td>{{dato.celular}}</td>
+						<td>{{dato.correo}}</td>
+						<td><a class="btn btn-success btn-xs" href="listcitas/{{dato.idmedico}}/1"><small class="glyphicon glyphicon-th-list"> </small> Citas</a></td>
+						<td><a class="btn btn-success btn-xs" href="{% url 'citas:verMedico' dato.idmedico %}"><small class="glyphicon glyphicon-eye-open"> </small> Ver</a></td>
+						
+					</tr>
+				{% empty %}
+				<li>No hay Médicos Registrados</li>
+				{% endfor %}
+			{% endif %}
+		</tbody>
+	</table>	
+  </div>
+  <div class="panel-footer">
+  	
+  	<div class="col-md-2"></div>
+  	{% if medico.paginator %}
+  <ul class="pagination">
+    {% if medico.has_previous %}
+      <li><a href="?page={{ medico.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><a href="#">&laquo;</a></li>
+    {% endif %}
+
+    {% for num in medico.paginator.page_range %}
+      {% ifequal num medico.number %}
+        <li class="active"><a href="#">{{ num }}<span class="sr-only">(current)</span></a></li>
+      {% else %}
+        <li><a href="?page={{ num }}">{{ num }}</a></li>
+
+      {% endifequal %}
+    {% endfor %}
+
+    {% if medico.has_next %}
+      <li><a href="?page={{ medico.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><a href="#">&raquo;</a></li>
+    {% endif %}
+  <ul>
+	{% endif %}
+  </div>
+</div>
+
+
+{% endblock %}

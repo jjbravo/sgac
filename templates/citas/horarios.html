@@ -1,0 +1,285 @@
+{% extends 'citas/base.html' %}
+{% load bootstrap_tags %}
+
+{% load url from future %}
+{% block title %} Especialidades {% endblock %}
+{% block js %}
+<script>
+	$(function(){
+		$(".alert").fadeIn(400).delay(2000).slideUp(700);
+		$("#nueva-hora").hide();
+		//$('#hide').hide();
+		if($(".error-msg").attr('class')=='error-msg'){
+			$("#nuevo").html('Ocultar');
+			$("#nuevo").attr('value','Ocultar');
+		$("#nueva-hora").show();
+		//$('#hide').show();
+
+		}
+
+		$("#nuevo").click(function(){
+			var valu=$("#nuevo").attr('value');
+
+			if(valu=='Ocultar'){
+			//alert(valu);
+				$("#nueva-hora").slideUp(400);
+				//$("#nueva-hora").hide();
+				$("#nuevo").html('Nuevo');
+				$("#nuevo").attr('value','Nuevo');
+			}
+			else if(valu=='Nuevo'){
+
+				$("#nueva-hora").slideDown(400);
+				//$('#hide').show();
+				$("#nuevo").html('Ocultar');
+				$("#nuevo").attr('value','Ocultar');
+			}
+		});
+
+		// MODAL PARA DELETE ESPECIALIDAD
+		var url;
+				{% for dato in horas %}
+				$("#delete{{dato.pk}}").click(function(){
+					 url=$("#iddelete{{dato.pk}}").val();
+				//alert("has dicho que NO");
+				
+				});
+		
+			{% endfor %}
+
+			$("#si").click(function(){
+						//alert("Has dicho que si");
+						//+++++++++++++++++++++++++++++++++
+				$.ajax({
+			    		
+			    		url:url,
+			    		type:'GET',
+
+			    	});
+			
+		//+++++++++++++++++++++++++++++++++	
+						//alert(url);
+						$("#myModal").modal('hide');
+						
+									setTimeout(function(){  
+								    urlReload = "{% url 'citas:configHorario' %}";  
+								    $(location).attr('href',urlReload);  
+								    },100);
+					});
+
+
+// $('#hide').click(function(){
+// 	$("#nueva-especialidad").hide();
+
+// });
+
+});
+</script>
+{% endblock %}
+{% block navbar %}
+				
+	
+			<ul class="nav navbar-nav">
+				
+				<li >
+					<a href="/administracion"><span class="glyphicon glyphicon-home" ></span> Home</a>
+				</li>
+				
+				 <li class="dropdown">
+			        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user" ></span> Usuarios <b class="caret"></b></a>
+			        <ul class="dropdown-menu">
+			           <li><a href="usuarios">Lista de usuarios</a></li>
+			           <li><a href="recepcionista">Nuevo usuario</a></li>
+			        </ul>
+			      </li>
+			      <!-- Medicos -->
+			      <li class="dropdown">
+			        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user" ></span> Médicos <b class="caret"></b></a>
+			        <ul class="dropdown-menu">
+			           <li><a href="{% url 'citas:getMedico' %}">Lista de Médicos</a></li>
+			           <li><a href="/administracion/medicos/addmedico/">Nuevo Médico</a></li>
+			           <li>
+			          <a href="/medicos">Agenda de Médicos</a>
+			        </li>
+			        </ul>
+			      </li>
+			      <!-- Configuracion -->
+			        <li class="dropdown">
+			        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class=" glyphicon glyphicon-wrench" ></span> Configuración <b class="caret"></b></a>
+			        <ul class="dropdown-menu">
+			           <li><a href="{% url 'citas:configEspecialidades' %}">Especialidades</a></li>
+			           <li><a href="{% url 'citas:configServicios' %}">Servicios</a></li>
+			           <li><a href="{% url 'citas:configHorario' %}">Horario</a></li>
+			           
+			        </ul>
+			      </li>
+				
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li class="navbar-rigth">
+				<a>	<span class="glyphicon glyphicon-user" ></span>  Administracion   {{medico.nombres}} {{medico.apellidos}}</a>
+				</li>
+
+				<li>
+					<a href="{% url 'citas:logout' %}"><span class="glyphicon glyphicon-off"></span> Salir</a>
+				</li>
+			</ul>
+				
+		
+ {% endblock %}
+
+{% block navsAsideIzq %} 
+	<ul class="nav nav-pills nav-stacked">
+				  <li class="active"><a href="/administracion"><span class="glyphicon glyphicon-home" ></span> Home</a></li>
+				 
+				<li >
+					<a href="recepcionista"><span class="glyphicon glyphicon" ></span> Recepcionistas</a>
+				</li>
+					
+				
+				<li>
+					<a href="{% url 'citas:logout' %}"><span class="glyphicon glyphicon-off"></span> Salir</a>
+				</li>
+				</ul>
+				<br>
+{% endblock %}
+{% block contenido  %} 
+
+
+<div class="panel panel-primary">
+	<div class="panel-heading">Especialidades</div>
+  <div class="panel-body">
+
+<table class="table table-hover table-bordered">
+		<thead>
+			<tr>
+				<th>Hora</th> 
+				<th>Editar</th> 
+				<th>Eliminar</th> 
+				
+			</tr>
+		</thead>
+		<tbody>
+			{% if horas  %} 
+					
+			
+				{% for dato in horas %}
+					<tr>
+						
+						
+						<td>{{dato.hora}}</td>
+						<td><a class="btn btn-success btn-xs" href="{% url 'citas:configHorarioUpdate' dato.pk %}"><span class="glyphicon glyphicon-pencil"></span></a> </td>
+						<td>			
+						<input id="iddelete{{dato.pk}}" type="hidden" value="{% url 'citas:configHorarioDelete' dato.pk %}" >
+<a id="delete{{dato.pk}}" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#myModal" name="accion"  href=""><span class="glyphicon glyphicon-remove" ></span></a>
+						</td>
+						
+					</tr>
+				
+				
+				{% endfor %}
+				
+
+			{% else %}
+			
+				<div class="alert alert-info">
+					<p> Aún no hay Horas registradas</p>	
+				</div>
+				
+			{% endif %}
+		</tbody>
+	</table>	
+
+</div>
+	  <div class="panel-footer">
+  	
+  	<div class="col-md-2"></div>
+  	{% if horas.paginator %}
+  <ul class="pagination">
+    {% if horas.has_previous %}
+      <li><a href="?page={{ horas.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><a href="#">&laquo;</a></li>
+    {% endif %}
+
+    {% for num in horas.paginator.page_range %}
+      {% ifequal num horas.number %}
+        <li class="active"><a href="#">{{ num }}<span class="sr-only">(current)</span></a></li>
+      {% else %}
+        <li><a href="?page={{ num }}">{{ num }}</a></li>
+
+      {% endifequal %}
+    {% endfor %}
+
+    {% if horas.has_next %}
+      <li><a href="?page={{ horas.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><a href="#">&raquo;</a></li>
+    {% endif %}
+  <ul>
+	{% endif %}
+  </div>
+</div>
+
+<a id="nuevo" class="btn btn-primary" value="Nuevo">Nuevo</a>
+
+ <br>	<br>
+
+
+
+<div id="nueva-hora" class="panel panel-primary">
+	<div class="panel-heading">Nueva hora</div>
+  <div class="panel-body">
+   <div class="col-md-12">
+	   <div class="col-md-3"></div>
+		   <div class="col-md-6">
+		   	
+	<form role="form" class="form-horizontal"  id="formulario" method="POST"  >
+
+		 {% csrf_token %}
+		 
+		 	
+		
+
+
+		{{ form|as_bootstrap }}
+
+       
+        
+
+  
+		 <input class="btn btn-success" type="submit" value="Guardar"> 
+	</form>
+		   </div>
+	   <div class="col-md-13"></div>
+   </div>
+ </div>
+</div>
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel"><span class="glyphicon glyphicon-warning-sign"></span>   Precaución</h4>
+      </div>
+      <div class="modal-body">
+      	
+      		
+       <p>
+       	
+       ¿Esta seguro que desea eliminar la hora seleccionada?
+       </p> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+        <button id="si" type="button" class="btn btn-primary">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

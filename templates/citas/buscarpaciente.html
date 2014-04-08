@@ -1,0 +1,366 @@
+{%  extends 'citas/base.html' %}
+{% load url from future %}
+{% load bootstrap_tags %}
+{% block js %}
+<script>
+	$(function(){
+		$(".alert").fadeIn(400).delay(2000).slideUp(700);
+
+		//+++++++++++++++++++++++++
+		// CANCELAR CITAS
+		var url,id_paciente;
+				{% for cit in citas %}
+				$("#cancelar{{cit.pk}}").click(function(){
+					 url=$("#idcancelar{{cit.pk}}").val();
+				//alert("has dicho que NO");
+				id_paciente={{cit.paciente_idpaciente.id_paciente}}
+				
+				});
+		
+			{% endfor %}
+
+			$("#si").click(function(){
+						//alert("Has dicho que si");
+						//+++++++++++++++++++++++++++++++++
+			    //var id=$('#documento').val();
+				$.ajax({
+						//data:{'id':id},
+			    		url:url,
+			    		type:'GET',
+			    		
+
+			    	});
+			
+		//+++++++++++++++++++++++++++++++++	
+						//alert(url);
+						$("#myModal").modal('hide');
+						
+								 setTimeout(function(){  
+								     urlReload = "/buscar/"+id_paciente;  
+								     $(location).attr('href',urlReload);  
+								     },100);
+					});
+		//+++++++++++++++++++++++++
+
+		{% if hecho %}
+			$("#imprimirModal").modal('show');
+		{% endif %}
+
+		$("#imprimircita").click(function(){
+
+			$("#imprimirModal").modal('hide');
+									// setTimeout(function(){  
+								 //    urlReload = "/buscar";  
+								 //    $(location).attr('href',urlReload);  
+								 //    },100);
+		});
+
+	});
+</script>
+{% endblock %}
+{% block title %}
+Buscar
+{% endblock %}
+{% block navbar %}
+				
+			<ul class="nav navbar-nav">
+				<li >
+					<a href="{% url 'citas:index' %}"><span class="glyphicon glyphicon-home" ></span> Home</a>
+				</li>
+				
+				
+				
+				
+				<li class="active" >
+					<a href="/getcita"><span class="glyphicon glyphicon-list-alt" ></span> Citas</a>
+				</li>
+				<li>
+					<a href="/getpacientes"><span class="glyphicon glyphicon-user"></span> Pacientes</a>
+				</li>				
+				
+				
+
+				
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li class="navbar-rigth">
+				<a>	<span class="glyphicon glyphicon-user" ></span> Recepción </a>
+				</li>
+				<li>
+					<a href="{% url 'citas:logout' %}"><span class="glyphicon glyphicon-off"></span> Salir</a>
+				</li>
+
+			</ul>
+		
+		
+ {% endblock %}
+{% block navsAsideIzq %} 
+	<ul class="nav nav-pills nav-stacked">
+				  <li ><a href="/getcita"><span class="glyphicon glyphicon-home" ></span> Home</a></li>
+				  <li class="active">
+					<a href="/buscar"><span class="glyphicon glyphicon-search" ></span> Buscar</a>
+				</li>
+				 
+				<li >
+					<a href="/getcita"><span class="glyphicon glyphicon-list-alt" ></span>  Citas</a>
+				</li>
+				</ul>
+				<br>
+{% endblock %}
+{% block contenido  %} 
+<div class="panel panel-primary">
+	<div class="panel-heading"><span class="glyphicon glyphicon-search" ></span> Buscar</div>
+  <div class="panel-body">
+{% if noexiste %}
+	<div class="alert alert-info">
+			<p>{{ noexiste }} <b>{{notdocument}}</b></p>	
+	</div>
+	{% endif %}
+{% if citaagendada %}
+	<div class="alert alert-info">
+			<p>{{citaagendada}}</p>	
+	</div>
+	{% endif %}
+
+	{% if citacancelada %}
+	<div class="alert alert-success">
+			<p>{{ citacancelada }}</p>	
+	</div>
+	{% endif %}
+
+
+
+
+
+<div class="col-md-2"></div>
+<div class="col-md-6">
+
+         <form method="POST" role="form" class="form-horizontal" action="{% url 'citas:buscar' %}">
+ {% csrf_token %}
+    <!--<input class="form-control" id="docuPaciente" type="text" name="documento" ></input>
+-->
+        {{ form|as_bootstrap }}
+
+    <input class="btn btn-success" id="getpaciente" type="submit" value="Buscar">
+         </form>
+</div>
+</div>
+</div>
+
+
+
+{% if paciente %}
+
+
+
+
+<div class="panel panel-primary">
+	<div class="panel-heading"><span class="glyphicon glyphicon-user"></span> Paciente {% for pacient in paciente %} <b>{{pacient.nombres}} {{pacient.apellidos}} </b> {% endfor %}</div>
+  <div class="panel-body">
+
+<table class="table table-hover table-bordered">
+	<thead>
+		<tr>
+			<th>Documento</th>
+			<th>Nombres</th>
+			<th>Apellidos</th>
+			<th>Edad</th>
+			<th>Direccion</th>
+			<th>Celular</th>
+			<th>Correo</th>
+			<th>Cita</th>
+
+		</tr>
+	</thead>
+	<tbody>
+
+		
+	{% for pacient in paciente %}
+		<tr>
+			<input type="hidden" id="documento" value="{{pacient.documento}}" >
+			<td>{{pacient.documento}}</td>
+			<td>{{pacient.nombres}}</td>
+			<td>{{pacient.apellidos}}</td>
+			<td>{{pacient.calcular_edad}}</td>
+			<td>{{pacient.direccion}}</td>
+			<td>{{pacient.celular}}</td>
+			<td>{{pacient.correo}}</td>
+<td><a class="btn btn-success btn-xs" href="/addcita/{{pacient.id_paciente}}"><span class="glyphicon glyphicon-plus" ></span></a></td>
+			
+		</tr>
+	
+	
+		{% endfor %}
+	
+	
+	</tbody>
+</table>
+
+
+  
+	</div>
+</div>
+	
+	
+{% endif %}
+
+	{% if nocitas %}
+	<div class="alert alert-info">
+			<p>{{ nocitas }}</p>	
+	</div>
+	{% endif %}
+
+{% if citas %} 
+<div class="panel panel-primary">
+	<div class="panel-heading"><span class="glyphicon glyphicon-list-alt" ></span> Próximas citas para {% for pacient in paciente %} <b>{{pacient.nombres}} {{pacient.apellidos}} </b> {% endfor %}</div>
+  <div class="panel-body">
+  
+
+<table class="table table-hover table-bordered">
+	<thead>
+		<tr>
+			<th>Medico</th>
+			<th>Tratamiento</th>
+			
+			<th>Fecha proxima cita</th>
+			<th>Hora</th>
+			<th>Estado</th>
+			<th>Acción</th>
+
+		</tr>
+	</thead>
+	<tbody>
+	{% for  cit in citas %} 
+		{# Each "contact" is a Contact model object. #}
+	
+		<tr>
+			<td>{{cit.medico_idmedico.nombres}} {{cit.medico_idmedico.apellidos}}</td>
+		
+			<td>{{cit.servicio_idservicio}}</td>
+			<td>{{cit.fecha}}</td>
+			<td>{{cit.hora_idhora}}</td>
+			<td>{{cit.estado_cita_idestado}}</td>
+		<input id="idcancelar{{cit.pk}}" type="hidden" value="/cancelarcitaList/{{cit.pk}}" >
+<td><a id="cancelar{{cit.pk}}" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#myModal" name="accion"  href=""><span class="glyphicon glyphicon-remove"></span></a></td>
+		</tr>
+
+	
+		{% endfor %}
+	
+	
+	</tbody>
+</table>
+
+
+<div class="col-md-4">
+	
+</div>
+
+
+  </div>
+
+
+  <div class="panel-footer">
+Citas
+</div>
+  </div>
+		 
+{% endif %}
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel"><span class="glyphicon glyphicon-warning-sign"></span>   Precaución</h4>
+      </div>
+      <div class="modal-body">
+      	
+      		
+       <p>
+       	
+       ¿Esta seguro que desea cancelar la cita seleccionada?
+       </p> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+        <button id="si" type="button" class="btn btn-primary">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal  IMPRIMIR -->
+{% if hecho %}
+<div class="modal fade" id="imprimirModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h5 class="modal-title" id="myModalLabel"><span class="glyphicon glyphicon-ok"></span>   {{hecho}}</h5>
+      </div>
+      <div class="modal-body">
+      	
+      
+		<div class="col-md-8"></div>
+		<div class="col-md-3"><h5>Cita No {% for cit in cita %}  {{cit.idcita}} {% endfor %}</h5></div>
+		<table class="table table-hover">
+				{% for cit in cita %}
+			<tbody>
+			
+				<tr>
+					<th>Nombres</th> <td>{{cit.paciente_idpaciente.nombres}}</td>
+					<th>Apellidos</th> <td>{{cit.paciente_idpaciente.apellidos}}</td>
+				</tr>
+				<tr>
+					
+				<th>Documento</th> <td>{{cit.paciente_idpaciente.documento}}</td>
+				<td></td>
+				<td></td>
+				</tr>
+				<tr>
+					
+				<th>Fecha</th><td>{{cit.fecha}}</td>
+				<th>Hora</th><td>{{cit.hora_idhora}}</td>
+				</tr>
+				<tr>
+				<td><b> Tratamiento</b></td> <td>{{cit.servicio_idservicio}}</td>
+				<td></td>
+				<td></td>
+				</tr>	
+					
+				
+			
+				<tr>
+					<th>Médico</th>
+				<td>{{cit.medico_idmedico.nombres}} {{cit.medico_idmedico.apellidos}}</td>
+		
+					<th>Especialidad</th>
+				<td>{{cit.medico_idmedico.especialidad_idespecialidad}}</td>
+			
+			
+			
+				</tr>
+			</tbody>
+		</table>
+
+       
+      </div>
+      <div class="modal-footer">
+      	<div class="col-md-6">
+      		
+       ¿Desea imprimir el desprendible?
+      	</div>
+    
+        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+		       
+			
+<a target="_blank" href="imprimircita/{{cit.paciente_idpaciente.pk}}/{{cit.fecha|date:'Y'}}/{{cit.fecha|date:'m'}}/{{cit.fecha|date:'d'}}/{{cit.hora_idhora.pk}}/{{cit.medico_idmedico.pk}}" id="imprimircita" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-print"> </span> Imprimir</a>
+		{% endfor %}
+    </div>
+  </div>
+</div>
+</div>
+{% endif %}
+{% endblock %}

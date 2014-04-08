@@ -1,0 +1,171 @@
+{% extends 'citas/base.html' %}
+{% load url from future %}
+{% load bootstrap_tags %}
+{% block title %}
+Pacientes
+{% endblock %}
+
+{% block js %}
+<script>
+	$(function(){
+		$(".alert").fadeIn(400).delay(2000).slideUp(700);
+	});
+	</script>
+{% endblock %}
+{% block navbar %}
+				
+			<ul class="nav navbar-nav">
+				<li >
+					<a href="{% url 'citas:index' %}"><span class="glyphicon glyphicon-home" ></span> Home</a>
+				</li>
+				
+				
+			
+				
+				<li  >
+					<a href="/getcita"><span class="glyphicon glyphicon-list-alt" ></span> Citas</a>
+				</li>
+				<li class="active">
+					<a href="/getpacientes"><span class="glyphicon glyphicon-user"></span> Pacientes</a>
+				</li>				
+				
+
+				
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li class="navbar-rigth">
+				<a>	<span class="glyphicon glyphicon-user" ></span> Recepción </a>
+				</li>
+				<li>
+					<a href="{% url 'citas:logout' %}"><span class="glyphicon glyphicon-off"></span> Salir</a>
+				</li>
+
+			</ul>
+		
+		
+ {% endblock %}
+ {% block logout %} <a href="{% url 'citas:logout' %}">Salir</a>
+					{% endblock %}
+{% block navsAsideIzq %} 
+	<ul class="nav nav-pills nav-stacked">
+				  <li {% if pacientes.paginator %} class="active" {% endif %} ><a href="/getpacientes"><span class="glyphicon glyphicon-home" ></span> Home</a></li>
+				  <li>
+					<a href="/addpaciente"><span class="glyphicon glyphicon-plus" ></span> Nuevo</a>
+				</li>
+				<li {% if form %} class="active" {% endif %} >
+					<a href="/buscarpaciente"><span class="glyphicon glyphicon-search" ></span> Buscar</a>
+				</li>
+				
+				</ul>
+				<br>
+{% endblock %}					
+{% block  contenido %} 
+{% if form %}
+<div class="panel panel-primary">
+	<div class="panel-heading"><span class="glyphicon glyphicon-search"></span> Buscar</div>
+  <div class="panel-body">
+  		{% if noexiste %}
+	<div class="alert alert-info">
+			<p>{{ noexiste }} <b>{{notdocument}}</b></p>	
+	</div>
+	{% endif %}
+  	<div class="col-md-2"></div>
+  	<div class="col-md-6">
+  	<form method="POST" role="form" class="form-horizontal" action="{% url 'citas:buscarpaciente' %}">
+ {% csrf_token %}
+    <!--<input class="form-control" id="docuPaciente" type="text" name="documento" ></input>
+-->
+        {{ form|as_bootstrap }}
+
+    <input class="btn btn-success" id="getpaciente" type="submit" value="Buscar">
+         </form>
+  	</div>
+   </div>
+   	
+   </div>
+{% endif %}
+
+{% if pacientes %}
+<div class="panel panel-primary">
+	<div class="panel-heading"><span class="glyphicon glyphicon-user"></span> Pacientes | Datos personales</div>
+  <div class="panel-body">
+   
+
+<table class="table table-hover table-bordered">
+		<thead>
+			<tr>
+			
+				<th>Documento</th> 
+				<th>Nombres</th> 
+				<th>Edad</th> 
+				<th>Direccion</th>
+				<th>Ciudad</th>
+				<th>Celular</th>
+				<th>Teléfono</th>
+				<th>Correo</th>
+				<th>Acción</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% if pacientes  %} 
+					
+				
+
+				{% for dato in pacientes %}
+				
+
+					<tr>
+						
+						<td>{{dato.documento}}</td>
+						<td>{{dato.nombres}} {{dato.apellidos}}</td>
+						<td>{{dato.calcular_edad}}</td>
+						<td>{{dato.direccion}}</td>
+						<td>{{dato.ciudad}}</td>
+						<td>{{dato.celular}}</td>
+						<td>{{dato.telefono}}</td>
+						<td>{{dato.correo}}</td>
+						<td><a class="btn btn-success btn-xs" href="/updatepaciente/{{dato.id_paciente}}"><span class="glyphicon glyphicon-pencil"></span></a></td>
+					</tr>
+				{% empty %}
+				<li>No hay Pacientes Registrados aún</li>
+				
+				
+				{% endfor %}
+			{% endif %}
+		</tbody>
+	</table>	
+  </div>
+  <div class="panel-footer">
+  	
+  	<div class="col-md-2"></div>
+  	{% if pacientes.paginator %}
+  <ul class="pagination">
+    {% if pacientes.has_previous %}
+      <li><a href="?page={{ pacientes.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><a href="#">&laquo;</a></li>
+    {% endif %}
+
+    {% for num in pacientes.paginator.page_range %}
+      {% ifequal num pacientes.number %}
+        <li class="active"><a href="#">{{ num }}<span class="sr-only">(current)</span></a></li>
+      {% else %}
+        <li><a href="?page={{ num }}">{{ num }}</a></li>
+
+      {% endifequal %}
+    {% endfor %}
+
+    {% if pacientes.has_next %}
+      <li><a href="?page={{ pacientes.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><a href="#">&raquo;</a></li>
+    {% endif %}
+  <ul>
+	{% endif %}
+  </div>
+</div>
+
+{% endif %}
+
+
+{% endblock %}

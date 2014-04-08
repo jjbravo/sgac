@@ -1,0 +1,50 @@
+{% extends 'citas/base.html' %}
+{% load url from future %}
+
+{% block navbar %}
+				
+			<ul class="nav navbar-nav">
+				<li >
+					<a href="{% url 'citas:index' %}"><span class="glyphicon glyphicon-home" ></span> Home</a>
+				</li>
+				<li>
+					<a href="#">Link</a>
+				</li>
+				
+				<li >
+					<a href="/getpacientes">Pacientes</a>
+				</li>
+				
+				<li class="active">
+					<a href="/getmedico">Médicos</a>
+				</li>	
+				<li>
+					<a href="{% url 'citas:logout' %}">Salir</a>
+				</li>
+
+				
+			</ul>
+		
+		
+ {% endblock %}
+ {% block logout %} <a href="{% url 'citas:logout' %}">Salir</a>
+					{% endblock %}
+
+{% block navsAsideIzq %} 
+	<ul class="nav nav-pills nav-stacked">
+				  <li ><a href="#"><span class="glyphicon glyphicon-home" ></span> Home</a></li>
+				  <li class="active">
+					<a href="/addmedico">Nuevo Médico</a>
+				</li>
+				  <li>
+					<a href="/addmedico">Editar</a>
+				</li>
+				</ul>
+				<br>
+{% endblock %}	
+
+{% block contenido  %}
+
+	<h2>No tienes los permisos suficientes para realizar esta accion</h2>
+
+ {% endblock %}

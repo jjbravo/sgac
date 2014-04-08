@@ -1,0 +1,15 @@
+{% extends "citas/base.html" %}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block contenido %}
+	{% for entry in bloc_entris %}
+    	<h2>{{ entry.nombres }} {{ entry.documento|upper }}</h2>
+    	<p style="margin-left:15px">{{ entry }}</p>
+	{% endfor %}
+{% endblock %}
+
+{%block page_foot%}
+	Sample page {{block.super}}
+{%endblock%}
+

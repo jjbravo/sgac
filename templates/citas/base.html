@@ -1,0 +1,115 @@
+{% load staticfiles %} 
+{% load url from future %}
+
+<!doctype html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	
+	<title>{% block title %} {% endblock %}</title>
+
+	
+	<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+	<link href='http://fonts.googleapis.com/css?family=Berkshire+Swash' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Ruluko' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="{% static 'css/custom-theme/jquery-ui-1.10.4.custom.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+	
+	<script src="{% static 'js/jquery.js' %}"></script>
+	
+	<script src="{% static 'js/jquery-ui-1.10.4.custom.min.js' %}"></script>
+	
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+   
+
+    
+    
+    {% block style %}
+    {% endblock %}
+    {% block js %}
+   
+    {% endblock %}
+</head>
+<body>
+		
+	
+		<nav class="navbar  navbar-inverse" role="navigation">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">Proyecto</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		{% block navbar %} 
+	
+
+
+	
+		{% endblock %}
+	   </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+	<div class="container">
+		<div class="row">
+
+	
+		{% block headers %} 
+		{% endblock %}
+	
+					{% block login %} {% endblock %}
+			<div class="col-md-3">
+	
+    
+				{% block navsAsideIzq %}
+
+				 {% endblock %}
+			</div>
+ 
+
+			<div class="col-md-9 contenido">
+				
+
+					{% block contenido %} {% endblock %}
+			</div>
+		</div>
+
+<hr>
+	</div>
+
+	<div class="footer col-md-12">
+		
+	{% block footer %}	
+<footer class="pieapp">
+	
+	<div class="col-md-12">
+		<div class="col-md-2"></div>
+			<div class="col-md-6">
+				
+				<br>
+				<h3>Centro Estético y Odontológico
+				<small>Adriana Valencia</small></h3>
+				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores, provident natus sequi! Illo, a iusto minus assumenda laudantium alias officia accusantium tempore voluptatibus? Ab, voluptates maiores possimus dolores eum quisquam.</p>
+				Todos los derechos reservados
+			</div>
+		<div class="col-md-2"></div>
+	</div>
+</footer>
+	{% endblock  %}	
+	</div>
+	
+	
+
+
+	<script src="{% static 'js/bootstrap.js' %}"></script>
+
+</body>
+</html>

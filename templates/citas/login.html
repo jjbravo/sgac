@@ -1,0 +1,71 @@
+{% extends 'citas/base.html' %}
+{% load url from future %}
+{% load bootstrap_tags %}
+
+{% block title %} Ingreso al sistema {% endblock %}
+{% block js %}
+<script>
+	$(function(){
+		$(".alert").fadeIn(400).delay(3000).slideUp(800);
+
+		});
+	</script>
+{% endblock %}	
+{% block navbar %}
+
+			<ul class="nav navbar-nav">
+				<li>
+					<a href="{% url 'citas:index' %}"><span class="glyphicon glyphicon-home" ></span> Home</a>
+				</li>
+			
+				
+					
+				<li class="active">
+					<a href="{% url 'citas:login' %}"><span class="glyphicon glyphicon-log-in"></span> Entrar</a>
+				</li>
+				
+			</ul>
+	
+ {% endblock %}
+{% block login %} 
+<div class="col-md-12">
+<div class="col-md-3"></div>
+<div class="col-md-6">
+	
+<div class="panel panel-primary">
+	<div class="panel-heading">Login</div>
+  <div class="panel-body">
+  	{% if errors %} 
+			
+				<div class="alert alert-danger">
+					{{errors}}
+				</div>
+	{% endif %}
+	{% if noactivo %} 
+			
+				<div class="alert alert-danger">
+					{{noactivo}}
+				</div>
+	{% endif %}
+			<p></p>
+				<div>
+					<form form-horizontal id="formulario" method="POST">
+				{% csrf_token %}
+				
+					
+						{{form|as_bootstrap}}
+					
+					<br>
+								
+					<input type="submit" class="btn btn-primary" value="Login">
+						
+			</form>
+  	</div>
+  		
+  	</div>
+
+</div>
+<div class="col-md-3"></div>	
+</div>
+</div>
+{% endblock %}

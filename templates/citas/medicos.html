@@ -1,0 +1,120 @@
+{% extends 'citas/base.html' %}
+{% load url from future %}
+{% block title %} Area de Medicos {% endblock %}
+{% load staticfiles %} 
+{% block navbar %}
+				
+	
+			<ul class="nav navbar-nav">
+				
+				<li >
+					<a href="/medicos"><span class="glyphicon glyphicon-home" ></span> Home</a>
+				</li>
+				
+				<li >
+					{% if medico %}
+					<a href="citas/{{usuario.pk}}"><span class="glyphicon glyphicon-list-alt" ></span> Citas</a>
+					{% else %}
+					<a href="citaslistmedicos"><span class="glyphicon glyphicon-list-alt" ></span> Citas</a>
+					{% endif %}
+				</li>
+
+				
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li class="navbar-rigth">
+				<a>	<span class="glyphicon glyphicon-user" ></span>    {{medico.nombres}} {{medico.apellidos}}</a>
+				</li>
+				<li>
+					<a href="{% url 'citas:logout' %}"><span class="glyphicon glyphicon-off"></span> Salir</a>
+				</li>
+
+			</ul>
+			
+		
+ {% endblock %}
+
+{% block navsAsideIzq %} 
+	<ul class="nav nav-pills nav-stacked">
+				  <li class="active"><a href="/recepcion"><span class="glyphicon glyphicon-home" ></span> Home</a></li>
+				 <li >
+					<a href="citas/{{usuario.pk}}"><span class="glyphicon glyphicon-list-alt" ></span> Citas</a>
+				</li>
+					
+				
+				<li>
+					<a href="{% url 'citas:logout' %}"><span class="glyphicon glyphicon-off"></span> Salir</a>
+				</li>
+				</ul>
+<br>
+{% endblock %}
+{% block contenido  %} 
+
+
+
+
+
+<div class="col-md-12">
+
+			
+		<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+  <!-- Indicators -->
+  <ol class="carousel-indicators">
+    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+    <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+    <li data-target="#carousel-example-generic" data-slide-to="3"></li>
+    <li data-target="#carousel-example-generic" data-slide-to="4"></li>
+  </ol>
+
+  <!-- Wrapper for slides -->
+  <div class="carousel-inner">
+    <div class="item active">
+      <img src="{% static 'img/img6.png' %}" alt="uno">
+      <div class="carousel-caption">
+        Uno
+      </div>
+    </div>
+     <div class="item">
+      <img src="{% static 'img/img7.png' %}" alt="uno">
+      <div class="carousel-caption">
+        Dos
+      </div>
+    </div>
+     <div class="item">
+      <img src="{% static 'img/img8.png' %}" alt="uno">
+      <div class="carousel-caption">
+        Tres
+      </div>
+    </div>
+     <div class="item">
+      <img src="{% static 'img/img9.png' %}" alt="uno">
+      <div class="carousel-caption">
+        Cuatro
+      </div>
+    </div>
+   <div class="item">
+      <img src="{% static 'img/img10.png' %}" alt="uno">
+      <div class="carousel-caption">
+        Cinco
+      </div>
+    </div>
+  </div>
+ 
+
+  <!-- Controls -->
+  <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+    <span class="glyphicon glyphicon-chevron-left"></span>
+  </a>
+  <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+    <span class="glyphicon glyphicon-chevron-right"></span>
+  </a>
+</div>
+</div>
+		
+
+
+
+
+
+{% endblock %}

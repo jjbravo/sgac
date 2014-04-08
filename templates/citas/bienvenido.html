@@ -1,0 +1,53 @@
+{% extends 'citas/base.html' %}
+{% load url from future %}
+{% block title %} Bienvenido {% endblock %}
+{% block navbar %}
+				
+	
+			<ul class="nav navbar-nav">
+				<li class="active">
+					<a href="/bienvenido"><span class="glyphicon glyphicon-home" ></span> Home</a>
+				</li>
+				
+					{% if perms.citas.recepcion %}
+				<li >
+					<a href="/recepcion"><span class="glyphicon glyphicon-inbox" ></span> Recepcion</a>
+				</li>
+					{% endif %}
+
+				{% if perms.citas.medico %}
+				<li>
+					<a href="/medicos">Médicos</a>
+				</li>	
+					{% endif %}
+
+					{% if perms.citas.administracion %}
+				<li>
+					<a href="/administracion">Administracion</a>
+				</li>
+					{% endif %}
+
+			
+				
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+			{% if medico %}
+				<li class="navbar-rigth">
+				<a>	<span class="glyphicon glyphicon-user" ></span>  <b> Bienvenido/a</b>     {% for medic in medico %} {{medic.nombres}} {{medic.apellidos}} {% endfor %}</a>
+				</li>
+
+			{% endif %}
+				<li>
+					<a href="{% url 'citas:logout' %}"><span class="glyphicon glyphicon-off"></span> Salir</a>
+				</li>
+
+			</ul>
+		
+ {% endblock %}
+	
+{% block headers %} <h1>Bienvenido/a</h1> {% endblock %}
+{% block contenido  %} 
+	<p>{{usuario.username|upper}},
+		la ultima vez que te vimos por aquí fue el {{usuario.last_login}}</p>
+		<p>Eres Miembro desde el {{usuario.date_joined}}</p>
+{% endblock %}

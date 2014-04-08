@@ -1,0 +1,195 @@
+{% extends 'citas/base.html' %}
+{% load url from future %}
+{% block title %}
+Citas
+{% endblock %}
+{% block js%}
+<script>
+	$(function(){
+var url;
+				{% for cit in cita %}
+				$("#cancelar{{cit.pk}}").click(function(){
+					 url=$("#idcancelar{{cit.pk}}").val();
+				//alert("has dicho que NO");
+				
+				});
+		
+			{% endfor %}
+
+			$("#si").click(function(){
+						//alert("Has dicho que si");
+						//+++++++++++++++++++++++++++++++++
+				$.ajax({
+			    		
+			    		url:url,
+			    		type:'GET',
+
+			    	});
+			
+		//+++++++++++++++++++++++++++++++++	
+						//alert(url);
+						$("#myModal").modal('hide');
+						
+									setTimeout(function(){  
+								    urlReload = "/getcita";  
+								    $(location).attr('href',urlReload);  
+								    },100);
+					});
+
+	});
+</script>
+{% endblock %}
+{% block navbar %}
+			
+			<ul class="nav navbar-nav">
+				<li >
+					<a href="{% url 'citas:index' %}"><span class="glyphicon glyphicon-home" ></span> Home</a>
+				</li>
+			
+				
+				<li class="active" >
+					<a href="/getcita"><span class="glyphicon glyphicon-list-alt" ></span> Citas</a>
+				</li>
+				<li>
+					<a href="/getpacientes"><span class="glyphicon glyphicon-user"></span> Pacientes</a>
+				</li>	
+		
+				
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li class="navbar-rigth">
+				<a>	<span class="glyphicon glyphicon-user" ></span> Recepción </a>
+				</li>
+				<li>
+					<a href="{% url 'citas:logout' %}"><span class="glyphicon glyphicon-off"></span> Salir</a>
+				</li>
+
+			</ul>
+		
+		
+ {% endblock %}
+ {% block logout %} <a href="{% url 'citas:logout' %}"><span class="glyphicon glyphicon-off"></span> Salir</a>
+					{% endblock %}
+
+{% block navsAsideIzq %} 
+	<ul class="nav nav-pills nav-stacked">
+				  <li class="active"><a href="#"><span class="glyphicon glyphicon-home" ></span> Home</a></li>
+				  <li>
+					<a href="/buscar"><span class="glyphicon glyphicon-search" ></span> Buscar</a>
+				</li>
+				 
+				</ul>
+				<br>
+{% endblock %}					
+{% block  contenido %} 
+
+{% if cita %} 
+<div class="panel panel-primary">
+	<div class="panel-heading"><span class="glyphicon glyphicon-list-alt" ></span>  Citas | Datos próximas citas</div>
+  <div class="panel-body">
+  
+
+<table class="table table-hover table-bordered">
+	{{usuario.username}}
+	<thead>
+		<tr>
+			<th>Médico</th>
+			<th>Tratamiento</th>
+			<th>Paciente</th>
+			<th>Fecha proxima cita</th>
+			<th>Hora</th>
+			<th>Estado</th>
+			<th>Accion</th>
+
+		</tr>
+	</thead>
+	<tbody>
+	{% for  cit in cita %} 
+		{# Each "contact" is a Contact model object. #}
+	
+		<tr>
+			<td>{{cit.medico_idmedico.nombres}} {{cit.medico_idmedico.apellidos}}</td>
+		
+			<td>{{cit.servicio_idservicio}}</td>
+			<td>{{cit.paciente_idpaciente}}</td>
+			<td>{{cit.fecha}}</td>
+			<td>{{cit.hora_idhora}}</td>
+			<td>{{cit.estado_cita_idestado}}</td>
+			<input id="idcancelar{{cit.pk}}" type="hidden" value="/cancelarcitaList/{{cit.pk}}" >
+<td><a id="cancelar{{cit.pk}}" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#myModal" name="accion"  href=""><span class="glyphicon glyphicon-remove" ></span></a></td>
+		</tr>
+	
+		{% endfor %}
+	
+	
+	</tbody>
+</table>
+
+
+
+<div class="col-md-4">
+	
+</div>
+
+  	
+  </div>
+
+
+  <div class="panel-footer">
+  	<div class="col-md-2"></div>
+  <ul class="pagination">
+    {% if cita.has_previous %}
+      <li><a href="?page={{ cita.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><a href="#">&laquo;</a></li>
+    {% endif %}
+
+    {% for num in cita.paginator.page_range %}
+      {% ifequal num cita.number %}
+        <li class="active"><a href="#">{{ num }}<span class="sr-only">(current)</span></a></li>
+      {% else %}
+        <li><a href="?page={{ num }}">{{ num }}</a></li>
+
+      {% endifequal %}
+    {% endfor %}
+
+    {% if cita.has_next %}
+      <li><a href="?page={{ cita.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><a href="#">&raquo;</a></li>
+    {% endif %}
+  <ul>
+
+</div>
+  </div>
+		 
+{% endif %}
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel"><span class="glyphicon glyphicon-warning-sign"></span>   Precaución</h4>
+      </div>
+      <div class="modal-body">
+      	
+      		
+       <p>
+       	
+       ¿Esta seguro que desea cancelar la cita seleccionada?
+       </p> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+        <button id="si" type="button" class="btn btn-primary">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

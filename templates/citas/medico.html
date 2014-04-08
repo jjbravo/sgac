@@ -1,0 +1,187 @@
+{% extends 'citas/base.html' %}
+{% load url from future %}
+{% block title %} Médicos {% endblock %}
+{% block js%}
+<script>
+	$(function(){
+		
+var url,button;
+				
+				
+				$("#activar").click(function(){
+					
+				//alert("has dicho que NO");
+					//button=$("#activar{{med.pk}}").val();
+					
+					ajaxSend();
+					//alert(button)
+					
+				});
+		
+			
+			function  ajaxSend(){
+				//alert("enviando");
+				$.ajax({
+			    		
+			    		//url:'activar/'+medicoid,
+			    		{% for med in medico %}
+			    		url:"{% url 'citas:activarMedico' med.pk %}",
+			    		{% endfor %}
+			    		type:'GET',
+			    		success:function(dato){
+			    			//if(dato==1)
+			    			if(dato==1){
+								$("#activar").html('Desactivar');
+								$("#iactivar").html('Activo');
+								$("#activar").attr('class','btn btn-danger btn-ms');
+							}else{
+								$("#activar").html('Activar');
+								$("#iactivar").html('Inactivo');
+								$("#activar").attr('class','btn btn-success btn-ms');
+							}
+			    		},
+
+			    	});
+			}
+
+	
+
+	});
+</script>
+{% endblock %}
+{% block navbar %}
+				
+			<ul class="nav navbar-nav">
+				<li >
+					<a href="/administracion"><span class="glyphicon glyphicon-home" ></span> Home</a>
+				</li>
+				
+				 <li class="dropdown">
+			        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user" ></span> Usuarios <b class="caret"></b></a>
+			        <ul class="dropdown-menu">
+			           <li><a href="usuarios">Lista de usuarios</a></li>
+			           <li><a href="recepcionista">Nuevo usuario</a></li>
+			        </ul>
+			      </li>
+			      <!-- Medicos -->
+			      <li class="dropdown">
+			        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user" ></span> Médicos <b class="caret"></b></a>
+			        <ul class="dropdown-menu">
+			           <li><a href="{% url 'citas:getMedico' %}">Lista de Médicos</a></li>
+			           <li><a href="/administracion/medicos/addmedico/">Nuevo Médico</a></li>
+			           <li>
+			          <a href="/medicos">Agenda de Médicos</a>
+			        </li>
+			        </ul>
+			      </li>
+			      <!-- Configuracion -->
+			        <li class="dropdown">
+			        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class=" glyphicon glyphicon-wrench" ></span> Configuración <b class="caret"></b></a>
+			        <ul class="dropdown-menu">
+			           <li><a href="{% url 'citas:configEspecialidades' %}">Especialidades</a></li>
+			           <li><a href="{% url 'citas:configServicios' %}">Servicios</a></li>
+			           <li><a href="{% url 'citas:configHorario' %}">Horario</a></li>
+			           
+			        </ul>
+			      </li>	
+
+				
+			</ul>
+	<ul class="nav navbar-nav navbar-right">
+				<li class="navbar-rigth">
+				<a>	<span class="glyphicon glyphicon-user" ></span>  Administracion   </a>
+				</li>
+
+				<li>
+					<a href="{% url 'citas:logout' %}"><span class="glyphicon glyphicon-off"></span> Salir</a>
+				</li>
+			</ul>
+		
+ {% endblock %}
+ {% block logout %} <a href="{% url 'citas:logout' %}">Salir</a>
+					{% endblock %}
+
+{% block navsAsideIzq %} 
+	<ul class="nav nav-pills nav-stacked">
+				  <li class="active"><a href="#"><span class="glyphicon glyphicon-home" ></span> Home</a></li>
+				  <li>
+					<a href="/administracion/medicos/addmedico/">Nuevo Médico</a>
+				</li>
+				  
+				</ul>
+				<br>
+{% endblock %}					
+{% block  contenido %} 
+<div class="panel panel-primary">
+	<div class="panel-heading">Médico {% for medic in medico %} {{medic.nombres}} {{medic.apellidos}} {% endfor %} </div>
+  <div class="panel-body">
+ 
+
+<table class="table table-hover ">
+		
+		<tbody>
+			{% for medic in medico %}
+			<tr>
+				
+				<th>Documento</th> <td>{{medic.documento}}</td><th>Acción</th>
+			</tr>
+			<tr>
+				
+				<th>Nombres</th> <td>{{medic.nombres}} {{medic.apellidos}}</td><td></td>
+			</tr>
+			<tr>
+				
+				<th>Especialidad</th><td>{{medic.especialidad_idespecialidad}}</td><td></td>
+			</tr>
+			<tr>
+				
+				<th>Servicios</th><td>{% for tag in medic.servicio.all %}{{tag.servicio}}<br>{% endfor %}</td><td></td>
+			</tr>	
+			<tr>
+				<th>Direccion</th><td>{{medic.direccion}}</td><td></td>
+				
+			</tr>
+			<tr>
+				
+				<th>Ciudad</th> <td>{{medic.ciudad}}</td><td></td>
+			</tr>
+			<tr>
+				
+				<th>Celular</th> <td>{{medic.celular}}</td><td></td>
+			</tr>
+			<tr>
+				
+				<th>Teléfono</th><td>{{medic.telefono}}</td><td></td>
+			</tr>
+			<tr>
+				
+				<th>Correo</th><td>{{medic.correo}}</td><td></td>
+			</tr>
+				
+			<tr>
+				
+				<th>Usuario</th><td>{{user.username}}</td><td></td> 
+			</tr>
+			<tr>
+				
+				<th>Contraseña</th><td>******** </td> <td><a class="btn btn-success btn-ms" href="changePassM/{{user.pk}}"><small class="glyphicon glyphicon-pencil"> </small> Cambiar</a></td> 
+			</tr>
+			<tr>
+				
+				<th>Estado</th>{% if user.is_active %}<td><p id="iactivar" >Activo</p> </td> <td><a id="activar" class="btn btn-danger btn-ms" > Desactivar </a></td> {%else%}<td><p id="iactivar" >Inactivo</p> </td> <td><a id="activar" class="btn btn-success btn-ms" > Activar </a></td>{%endif%}
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>	
+	
+  </div>
+  <div class="panel-footer">
+  	
+  	<div class="col-md-2"></div>
+  	<a class="btn btn-success btn-ms" {% for medic in medico %} href="{% url 'citas:medicoUpdate'  medic.pk %}" {% endfor %}><small class="glyphicon glyphicon-pencil"> </small> Editar</a>
+  </div>
+</div>
+			
+
+
+{% endblock %}
